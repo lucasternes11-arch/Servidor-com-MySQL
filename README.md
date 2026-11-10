@@ -14,22 +14,30 @@ Para o package.json:
 
 No MySQL:
 
-CREATE DATABASE aula;
-USE aula;
+CREATE DATABASE IF NOT EXISTS clinica_db;
+USE clinica_db;
 
-CREATE TABLE produtos (
-  id      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  sku     VARCHAR(30)   NOT NULL UNIQUE,
-  nome    VARCHAR(120)  NOT NULL,
-  preco   DECIMAL(10,2) NOT NULL CHECK (preco >= 0),
-  estoque INT UNSIGNED  NOT NULL DEFAULT 0,
-  criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS medicos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    especialidade VARCHAR(60) NOT NULL
 );
 
-INSERT INTO produtos (sku, nome, preco, estoque) VALUES
-  ('TEC-001', 'Teclado mecânico', 349.90, 15),
-  ('MOU-001', 'Mouse sem fio',    129.90, 40),
-  ('MON-001', 'Monitor 24"',      999.00,  8);
+CREATE TABLE IF NOT EXISTS agendamentos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    medico_id INT NOT NULL,
+    paciente_nome VARCHAR(100) NOT NULL,
+    data_hora DATETIME NOT NULL,
+    observacao VARCHAR(255),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (medico_id) REFERENCES medicos(id) ON DELETE CASCADE
+);
+
+-- Dados iniciais para teste
+INSERT INTO medicos (nome, especialidade) VALUES
+('Dra. Ana Costa', 'Cardiologia'),
+('Dr. Carlos Eduardo', 'Ortopedia'),
+('Dra. Mariana Lima', 'Dermatologia');
 
 
 Arquivo .env:
